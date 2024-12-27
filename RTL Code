@@ -1,0 +1,22 @@
+module clock_gating_dual_latch (
+    input wire clk,           
+    input wire enable,       
+    input wire reset,         
+    output wire gated_clk    
+);
+    reg latch1, latch2; 
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            latch1 <= 1'b0;
+        else
+            latch1 <= enable;
+    end
+    always @(negedge clk or posedge reset) begin
+        if (reset)
+            latch2 <= 1'b0;
+        else
+            latch2 <= latch1;
+    end
+    assign gated_clk = clk & latch2;
+
+endmodule
