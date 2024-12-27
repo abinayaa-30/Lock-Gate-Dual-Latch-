@@ -1,0 +1,48 @@
+module tb_clock_gating_dual_latch;
+    reg clk;
+    reg enable;
+    reg reset;
+    wire gated_clk;
+    clock_gating_dual_latch dut (
+        .clk(clk),
+        .enable(enable),
+        .reset(reset),
+        .gated_clk(gated_clk)
+    );
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; 
+    end
+    initial begin
+        reset = 1;
+        enable = 0;
+        #10;
+
+        reset = 0;
+        #10;
+
+        enable = 0;
+        #50;
+
+        enable = 1;
+        #50;
+
+        reset = 1;
+        #10;
+        reset = 0;
+        #10;
+
+        enable = 0;
+        #50;
+        enable = 1;
+        #50;
+
+        $stop;
+    end
+
+    initial begin
+        $monitor("Time: %0t | clk: %b | enable: %b | reset: %b | gated_clk: %b", 
+                 $time, clk, enable, reset, gated_clk);
+    end
+
+endmodule
